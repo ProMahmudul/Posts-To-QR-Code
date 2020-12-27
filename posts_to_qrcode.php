@@ -54,11 +54,17 @@ function pqrc_display_qr_code( $content ) {
 add_filter( "the_content", "pqrc_display_qr_code" );
 
 function pqrc_settings_init() {
-	add_settings_field( 'pqrc_height', __( 'QR Code Height', 'posts-to-qrcode' ), 'pqrc_display_height', 'general' );
-	add_settings_field( 'pqrc_width', __( 'QR Code Width', 'posts-to-qrcode' ), 'pqrc_display_width', 'general' );
+	add_settings_section( 'pqrc_section', __( 'Posts to QR Code', 'posts-to-qrcode' ), 'pqrc_section_callback', 'general' );
+
+	add_settings_field( 'pqrc_height', __( 'QR Code Height', 'posts-to-qrcode' ), 'pqrc_display_height', 'general', 'pqrc_section' );
+	add_settings_field( 'pqrc_width', __( 'QR Code Width', 'posts-to-qrcode' ), 'pqrc_display_width', 'general', 'pqrc_section' );
 
 	register_setting( 'general', 'pqrc_height', array( 'sanitize_callback' => 'esc_attr' ) );
 	register_setting( 'general', 'pqrc_width', array( 'sanitize_callback' => 'esc_attr' ) );
+}
+
+function pqrc_section_callback() {
+	echo "<p>" . __( 'Settings for posts to QR Plugin', 'posts-to-qrcode' ) . "</p>";
 }
 
 function pqrc_display_height() {
