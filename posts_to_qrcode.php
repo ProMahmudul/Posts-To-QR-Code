@@ -34,7 +34,13 @@ function pqrc_display_qr_code( $content ) {
 	}
 
 	//Dimension Hook
-	$dimension = apply_filters( 'pqrc_qrcode_dimension', '185x185' );
+	$height = get_option( 'pqrc_height' );
+	$width  = get_option( 'pqrc_width' );
+
+	$height = $height ? $height : 185;
+	$width  = $width ? $width : 185;
+
+	$dimension = apply_filters( 'pqrc_qrcode_dimension', "{$width}x{$height}" );
 
 	//Image Attributes
 	$image_attributes = apply_filters( 'pqrc_image_attributes', null );
@@ -46,3 +52,23 @@ function pqrc_display_qr_code( $content ) {
 }
 
 add_filter( "the_content", "pqrc_display_qr_code" );
+
+function pqrc_settings_init() {
+	add_settings_field( 'pqrc_height', __( 'QR Code Height', 'posts-to-qrcode' ), 'pqrc_display_height', 'general' );
+	add_settings_field( 'pqrc_width', __( 'QR Code Width', 'posts-to-qrcode' ), 'pqrc_display_width', 'general' );
+
+	register_setting( 'general', 'pqrc_height', array( 'sanitize_callback' => 'esc_attr' ) );
+	register_setting( 'general', 'pqrc_width', array( 'sanitize_callback' => 'esc_attr' ) );
+}
+
+function pqrc_display_height() {
+	$height = get_option( 'pqrc_height' );
+	printf( '<input type="text" id="%s" name="%s" value="%s"/>', 'pqrc_height', 'pqrc_height', $height );
+}
+
+function pqrc_display_width() {
+	$height = get_option( 'pqrc_width' );
+	printf( '<input type="text" id="%s" name="%s" value="%s"/>', 'pqrc_width', 'pqrc_width', $height );
+}
+
+add_action( "admin_init", "pqrc_settings_init" );
